@@ -10,4 +10,16 @@ dev — ветка для общей интеграции фич, тестиро
 3. Ветки релизов и хотфиксов (если проект большой)
 release/v1.0, hotfix/v1.0.1 — удобно, если для выкатывания версии.
 
-Структура репозитория (ОБСУДИТЬ)
+python 3.9.13
+
+Запуск проекта из корня
+uvicorn app.main:app --reload
+
+Создать миграцию
+alembic revision --autogenerate -m "Initial migration"
+
+Прогнать все миграции
+alembic upgrade head
+
+Откатиться на миграцию назад
+alembic downgrade -1
