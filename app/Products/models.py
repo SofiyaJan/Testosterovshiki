@@ -11,4 +11,4 @@ class Product(Base):
     fats = Column(Float)
     carbohydrates = Column(Float)
 
-    diet_links = relationship("DietProduct", back_populates="product")
+    diets = relationship("Diet",secondary="diet_products", back_populates="products")

@@ -7,19 +7,19 @@ from sqlalchemy.orm import relationship
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=True)
     email = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
-    age = Column(Integer)
-    gender = Column(String)
-    height = Column(Float)
-    weight = Column(Float)
-    obesity_level = Column(String)
+    age = Column(Integer, nullable=True)
+    gender = Column(String, nullable=True)
+    height = Column(Float, nullable=True)
+    weight = Column(Float, nullable=True)
+    obesity_level = Column(String, nullable=True)
 
-    goals = relationship("Goal", back_populates="user")
-    diets = relationship("Diet", back_populates="user")
-    analyses = relationship("Analysis", back_populates="user")
-    motivations = relationship("Motivation", back_populates="user")
+    #goals = relationship("Goal", back_populates="user")
+    #diets = relationship("Diet", back_populates="user")
+    #analyses = relationship("Analysis", back_populates="user")
+    #motivations = relationship("Motivation", back_populates="user")
 
 class Motivation(Base):
     __tablename__ = 'motivations'
@@ -30,4 +30,4 @@ class Motivation(Base):
     message_text = Column(Text)
     created_at = Column(Date)
 
-    user = relationship("User", back_populates="motivations")
+    #user = relationship("User", back_populates="motivations")

@@ -12,8 +12,8 @@ class Diet(Base):
     fats = Column(Float)
     carbohydrates = Column(Float)
 
-    user = relationship("User", back_populates="diets")
-    products = relationship("DietProduct", back_populates="diet")
+    #user = relationship("User", secondary="diet_products", back_populates="diets")
+    products = relationship("Product", secondary="diet_products", back_populates="diets")
 
 class DietProduct(Base):
     __tablename__ = 'diet_products'
@@ -22,5 +22,5 @@ class DietProduct(Base):
     product_id = Column(Integer, ForeignKey('products.id'), nullable=False)
     quantity = Column(Float)
 
-    diet = relationship("Diet", back_populates="products")
-    product = relationship("Product", back_populates="diet_links")
+    # diet = relationship("Diet", back_populates="products")
+    # product = relationship("Product", back_populates="diet_links")

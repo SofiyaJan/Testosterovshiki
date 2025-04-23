@@ -10,4 +10,4 @@ class Goal(Base):
     desired_weight = Column(Float)
     realism = Column(String)
 
-    user = relationship("User", back_populates="goals")
+    #user = relationship("User", back_populates="goals")
