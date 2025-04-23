@@ -11,7 +11,6 @@ class Diet(Base):
     proteins = Column(Float)
     fats = Column(Float)
     carbohydrates = Column(Float)
-
     #user = relationship("User", secondary="diet_products", back_populates="diets")
     products = relationship("Product", secondary="diet_products", back_populates="diets")
 

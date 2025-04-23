@@ -39,11 +39,11 @@ class BaseDAO:
       query = insert(cls.model).values(**data)
       await session.execute(query)
       await session.commit()
-      
+
   @classmethod
   async def change_by_id(cls,id, **data):
     async with async_session_maker() as session:
-      query = update(cls.model).filter_by(id).values(**data)
+      query = update(cls.model).filter_by(id = id).values(**data)
       await session.execute(query)
       await session.commit()
   @classmethod
