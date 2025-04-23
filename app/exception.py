@@ -22,19 +22,3 @@ IncorrectTokenFormatException = HTTPException(
 UserIsNotPresentException = HTTPException(
   status_code= status.HTTP_401_UNAUTHORIZED)
 
-EventAbsenceException = HTTPException(
-  status_code=status.HTTP_404_NOT_FOUND,
-  detail="Такого мероприятия не существует"
-)
-EventFullException = HTTPException(
-  status_code=status.HTTP_409_CONFLICT,
-  detail="Все места на это событие уже заняты"
-)
-EventAlreadyBookedException = HTTPException(
-  status_code=status.HTTP_409_CONFLICT,
-  detail="Вы уже забронировали место на этом мероприятии"
-)
-UserEventAbsenceException = HTTPException(
-  status_code=status.HTTP_404_NOT_FOUND,
-  detail="Мероприятия нет в забронированных"
-)
