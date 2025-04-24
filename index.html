@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>жиру.нет</title>
+  <style>
+    :root {
+      --bg: #f9fafb;
+      --card-bg: #ffffff;
+      --text: #1f2937;
+      --primary: #3b82f6;
+      --danger: #ef4444;
+      --muted: #6b7280;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg);
+      margin: 0;
+      padding: 2rem;
+      color: var(--text);
+    }
+    h1, h2, h3 { margin-top: 0; }
+    .container { max-width: 700px; margin: auto; }
+    .card {
+      background: var(--card-bg);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+    }
+    button {
+      padding: 0.75rem 1.25rem;
+      border: none;
+      border-radius: 0.5rem;
+      background: var(--primary);
+      color: white;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+    button:hover { background: #2563eb; }
+    .btn-outline {
+      background: none;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+    .btn-active {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-danger {
+      background: var(--danger);
+    }
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      border-radius: 8px;
+      background: #e5e7eb;
+      overflow: hidden;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--primary);
+      transition: width 0.3s ease;
+    }
+    .meal-tabs button {
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .meal-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.95rem;
+      margin-bottom: 0.25rem;
+    }
+    .text-muted { color: var(--muted); }
+    ul { padding-left: 1.25rem; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1 class="text-3xl font-bold mb-4">жиру.нет</h1>
+
+  <div id="auth" class="card">
+    <h2 class="text-xl font-semibold mb-2">Авторизация</h2>
+    <input id="username" type="text" placeholder="Логин">
+    <input id="password" type="password" placeholder="Пароль">
+    <button onclick="login()">Войти</button>
+  </div>
+
+  <div id="test" class="card" style="display:none;">
+    <h2 id="questionText" class="text-xl font-semibold mb-4"></h2>
+    <div id="options"></div>
+  </div>
+
+  <div id="main" style="display:none;">
+    <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+      <h2 class="text-xl font-bold">Главная</h2>
+      <button onclick="logout()" class="btn-danger">Выйти</button>
+    </div>
+
+    <div class="card">
+      <p>Добро пожаловать, <strong id="userDisplay"></strong>!</p>
+      <p>Цель: <strong id="goalDisplay"></strong></p>
+      <div class="progress-bar"><div class="progress-bar-fill" id="progressFill" style="width: 0%;"></div></div>
+      <p class="text-muted"><span id="caloriesTotal">0</span> ккал из <span id="caloriesGoal">0</span></p>
+    </div>
+
+    <div class="card">
+      <div class="meal-tabs">
+        <button onclick="switchMeal('Завтрак')" id="tab-Завтрак" class="btn-outline">Завтрак</button>
+        <button onclick="switchMeal('Обед')" id="tab-Обед" class="btn-outline">Обед</button>
+        <button onclick="switchMeal('Ужин')" id="tab-Ужин" class="btn-outline">Ужин</button>
+        <button onclick="switchMeal('Перекус')" id="tab-Перекус" class="btn-outline">Перекус</button>
+      </div>
+      <input id="product" type="text" placeholder="Продукт">
+      <input id="grams" type="number" placeholder="Грамм">
+      <button onclick="addProduct()">Добавить</button>
+      <div id="mealList" class="mt-2"></div>
+    </div>
+
+    <div class="card">
+      <h3 class="text-lg font-semibold">Витамины и минералы в еде:</h3>
+      <ul class="text-muted text-sm">
+        <li>Витамин A</li>
+        <li>Витамин C</li>
+        <li>Кальций</li>
+        <li>Железо</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+  const goals = {
+    'Похудение': 1200,
+    'Поддержание': 2000,
+    'Набор массы': 2800
+  };
+  const questions = [
+    {
+      question: 'Какой у вас уровень физической активности?',
+      options: [
+        { text: 'Минимальный', goal: 'Похудение' },
+        { text: 'Средний', goal: 'Поддержание' },
+        { text: 'Высокий', goal: 'Набор массы' }
+      ]
+    },
+    {
+      question: 'Какова ваша основная цель питания?',
+      options: [
+        { text: 'Снижение веса', goal: 'Похудение' },
+        { text: 'Стабильное питание', goal: 'Поддержание' },
+        { text: 'Рост мышечной массы', goal: 'Набор массы' }
+      ]
+    }
+  ];
+
+  let currentUser = '';
+  let goalVotes = { 'Похудение': 0, 'Поддержание': 0, 'Набор массы': 0 };
+  let currentQuestion = 0;
+  let meals = { Завтрак: [], Обед: [], Ужин: [], Перекус: [] };
+  let userGoal = '';
+  let selectedMeal = 'Завтрак';
+
+  window.onload = () => {
+    const savedUser = localStorage.getItem('user');
+    const savedGoal = localStorage.getItem('goal');
+    const savedMeals = localStorage.getItem('meals');
+    if (savedUser && savedGoal) {
+      currentUser = savedUser;
+      userGoal = savedGoal;
+      meals = savedMeals ? JSON.parse(savedMeals) : meals;
+      showMain(userGoal);
+    }
+  };
+
+  function login() {
+    const name = document.getElementById('username').value;
+    const pass = document.getElementById('password').value;
+    if (name && pass) {
+      currentUser = name;
+      document.getElementById('auth').style.display = 'none';
+      document.getElementById('test').style.display = 'block';
+      nextQuestion();
+    }
+  }
+
+  function logout() {
+    localStorage.clear();
+    location.reload();
+  }
+
+  function nextQuestion() {
+    const q = questions[currentQuestion];
+    document.getElementById('questionText').innerText = q.question;
+    const opts = document.getElementById('options');
+    opts.innerHTML = '';
+    q.options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.innerText = opt.text;
+      btn.style.display = 'block';
+      btn.style.marginBottom = '0.5rem';
+      btn.onclick = () => {
+        goalVotes[opt.goal]++;
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+          nextQuestion();
+        } else {
+          const finalGoal = Object.entries(goalVotes).reduce((a, b) => a[1] > b[1] ? a : b)[0];
+          localStorage.setItem('user', currentUser);
+          localStorage.setItem('goal', finalGoal);
+          localStorage.setItem('meals', JSON.stringify(meals));
+          showMain(finalGoal);
+        }
+      };
+      opts.appendChild(btn);
+    });
+  }
+
+  function showMain(goal) {
+    userGoal = goal;
+    document.getElementById('test').style.display = 'none';
+    document.getElementById('main').style.display = 'block';
+    document.getElementById('goalDisplay').innerText = goal;
+    document.getElementById('userDisplay').innerText = currentUser;
+    document.getElementById('caloriesGoal').innerText = goals[goal];
+    switchMeal('Завтрак');
+    updateMeals();
+  }
+
+  function switchMeal(meal) {
+    selectedMeal = meal;
+    document.querySelectorAll('.meal-tabs button').forEach(btn => btn.classList.remove('btn-active'));
+    document.getElementById('tab-' + meal).classList.add('btn-active');
+    updateMeals();
+  }
+
+  function addProduct() {
+    const name = document.getElementById('product').value;
+    const grams = parseInt(document.getElementById('grams').value);
+    if (!name || !grams) return;
+    const calories = Math.floor(Math.random() * 500);
+    meals[selectedMeal].push({ name, grams, calories });
+    localStorage.setItem('meals', JSON.stringify(meals));
+    document.getElementById('product').value = '';
+    document.getElementById('grams').value = '';
+    updateMeals();
+  }
+
+  function updateMeals() {
+    const mealList = document.getElementById('mealList');
+    mealList.innerHTML = '';
+    let total = 0;
+    meals[selectedMeal].forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'meal-item';
+      div.innerHTML = `<span>${item.name}</span><span>${item.grams} г — ${item.calories} ккал</span>`;
+      mealList.appendChild(div);
+      total += item.calories;
+    });
+    Object.values(meals).flat().forEach(i => total += 0); // full total for progress
+    const fullTotal = Object.values(meals).flat().reduce((sum, i) => sum + i.calories, 0);
+    document.getElementById('caloriesTotal').innerText = fullTotal;
+    const percent = Math.min(100, (fullTotal / goals[userGoal]) * 100);
+    document.getElementById('progressFill').style.width = percent + '%';
+  }
+</script>
+</body>
+</html>
